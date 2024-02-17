@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 const TicTacToe = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
@@ -15,6 +15,28 @@ const TicTacToe = () => {
     setBoard(newBoard);
     setIsXNext(!isXNext);
   };
+  //bot logic
+  useEffect(() => {
+    // Bot's move
+    if (!isXNext && !calculateWinner(board)) {
+      const emptySquares = board.reduce((acc, value, index) => {
+        if (!value) {
+          acc.push(index);
+        }
+        return acc;
+      }, []);
+
+      if (emptySquares.length > 0) {
+        const randomIndex = Math.floor(Math.random() * emptySquares.length);
+        const botMove = emptySquares[randomIndex];
+
+        const newBoard = board.slice();
+        newBoard[botMove] = 'O';
+        setBoard(newBoard);
+        setIsXNext(!isXNext);
+      }
+    }
+  }, [board, isXNext]);
 
   const renderSquare = (index:number) => (
     <button className="square" onClick={() => handleClick(index)}>
